@@ -1,0 +1,382 @@
+/* static/styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* --- Utility Classes --- */
+.status-running { color: #2ecc71; font-weight: bold; }
+.status-enabled { color: #2ecc71; font-weight: bold; }
+.status-long { color: #2ecc71; font-weight: bold; }
+.status-green { color: #2ecc71; font-weight: bold; }
+.status-red { color: #e74c3c; font-weight: bold; }
+.status-hold { color: #f39c12; font-weight: bold; }
+.status-pending { color: #f39c12; font-weight: bold; }
+.status-executed { color: #3498db; font-weight: bold; }
+
+.data-loss { color: #e74c3c; font-weight: bold; }
+.data-value { font-weight: bold; font-size: 1.1em; }
+
+/* --- General Layout --- */
+.card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* --- Header --- */
+header {
+    background-color: white;
+    color: #333;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+.header-title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.header-controls select, .header-controls button, .header-controls a.btn {
+    padding: 8px 12px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none; 
+    display: inline-block;
+}
+.btn-blue { background-color: #3498db; color: white; border-color: #3498db; }
+.btn-green { background-color: #2ecc71; color: white; border-color: #2ecc71; }
+.btn-orange { background-color: #f39c12; color: white; border-color: #f39c12; }
+.btn-red { background-color: #e74c3c; color: white; border-color: #e74c3c; }
+.btn-dark-mode { background-color: #34495e; color: white; border-color: #34495e; }
+
+
+/* --- Top Metrics Bar --- */
+.dashboard-metrics-top {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    max-width: 1800px;
+    margin: 0 auto 20px auto;
+}
+.metric-box {
+    text-align: center;
+    padding: 0 15px;
+}
+.metric-box > div:first-child {
+    font-size: 2em;
+    font-weight: bold;
+    color: #3498db;
+}
+.metric-label {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* --- Main Grid Layout --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 0 20px 20px 20px;
+    max-width: 1800px;
+    margin: auto;
+}
+
+.full-width-chart-container {
+    grid-column: 1 / span 4;
+}
+
+/* --- Section Containers --- */
+.section-container {
+    grid-column: 1 / span 4;
+    display: contents; 
+}
+
+/* RL Bot Status & Live Data Grid */
+.status-and-data-grid .sub-section {
+    grid-column: span 1;
+}
+.data-pair {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed #eee;
+}
+.data-pair:last-child {
+    border-bottom: none;
+}
+.rl-decision-box {
+    margin-top: 10px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-left: 3px solid #3498db;
+    font-size: 0.9em;
+}
+
+/* Metrics and Risk Grid */
+.metrics-and-risk-grid .metrics-card {
+    grid-column: span 1; 
+}
+.metrics-and-risk-grid .metrics-card h2 {
+    font-size: 1.1em;
+    margin-top: 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+}
+.projection-scenarios {
+    grid-column: span 2; 
+}
+.expected-range {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+/* Bottom Charts Grid */
+.bottom-charts-grid .chart-box, .bottom-charts-grid .table-box {
+    grid-column: span 2;
+}
+.table-box table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+.table-box th, .table-box td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+}
+.table-box th {
+    background-color: #f7f7f7;
+    font-weight: bold;
+}
+
+/* Recent Decisions Table */
+.recent-decisions-table .table-box.full-width {
+    grid-column: 1 / span 4;
+}
+
+/* Market News */
+.market-news-grid .news-articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+.news-article {
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 4px;
+}
+.news-article h4 {
+    margin-top: 0;
+    font-size: 1em;
+    color: #3498db;
+}
+.news-article p {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 0;
+}
+.news-sentiment {
+    float: right;
+    font-size: 0.9em;
+    color: #f39c12;
+}
+
+/* AI Analysis Section */
+.analysis-grid .market-context-row {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+.context-item {
+    text-align: center;
+}
+.context-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2c3e50;
+}
+.context-label {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Login Page Styling */
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.login-container h2 {
+    color: #2c3e50;
+}
+#login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 20px;
+}
+#login-button:disabled {
+    background-color: #99ccec;
+    cursor: not-allowed;
+}
+
+/* Footer Styling */
+.dashboard-footer {
+    background-color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    border-top: 2px solid #eee;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+}
+.dashboard-footer p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95em;
+}
+.dashboard-footer strong {
+    color: #3498db;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+}
+
+body.dark-mode .card {
+    background-color: #2d2d2d;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    color: #e0e0e0;
+}
+
+body.dark-mode header {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .dashboard-metrics-top {
+    background-color: #2d2d2d;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .metric-label {
+    color: #b0b0b0;
+}
+
+body.dark-mode .data-pair {
+    border-bottom: 1px dashed #444;
+}
+
+body.dark-mode .rl-decision-box {
+    background-color: #1f1f1f;
+    border-left: 3px solid #3498db;
+}
+
+body.dark-mode .table-box th {
+    background-color: #1f1f1f;
+}
+
+body.dark-mode .table-box td {
+    border-bottom: 1px solid #444;
+}
+
+body.dark-mode .news-article {
+    border: 1px solid #444;
+}
+
+body.dark-mode .news-article h4 {
+    color: #5dade2;
+}
+
+body.dark-mode .news-article p {
+    color: #b0b0b0;
+}
+
+body.dark-mode .context-value {
+    color: #e0e0e0;
+}
+
+body.dark-mode .context-label {
+    color: #b0b0b0;
+}
+
+body.dark-mode .metric-row {
+    color: #e0e0e0;
+}
+
+body.dark-mode .dashboard-footer {
+    background-color: #2d2d2d;
+    border-top: 2px solid #444;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .dashboard-footer p {
+    color: #b0b0b0;
+}
+
+body.dark-mode .dashboard-footer strong {
+    color: #5dade2;
+}
+
+body.dark-mode select, body.dark-mode button:not(.btn-blue):not(.btn-green):not(.btn-orange):not(.btn-red):not(.btn-dark-mode) {
+    background-color: #3d3d3d;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+body.dark-mode .btn-dark-mode {
+    background-color: #f39c12;
+    border-color: #f39c12;
+}
+
+body.dark-mode .login-container {
+    background-color: #2d2d2d;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .login-container h2 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .pin-input {
+    background-color: #3d3d3d;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+body.dark-mode .pin-input:focus {
+    border-color: #3498db;
+}

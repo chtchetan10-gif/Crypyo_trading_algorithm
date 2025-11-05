@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Driven Trading Bot Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            AI Driven Cryptocurrency Trading Algorithm Bot
+        </div>
+        <div class="header-controls">
+            <select id="symbol-select">
+                <option selected>SUI/USDC</option>
+            </select>
+            <select id="timeframe-select">
+                <option selected>30 Days</option>
+            </select>
+            <button class="btn btn-blue" id="refresh-btn">Refresh</button>
+            <button class="btn btn-green">Logs</button>
+            <button class="btn btn-orange">Pause</button>
+            <button class="btn btn-dark-mode" id="dark-mode-toggle">🌙 Dark Mode</button>
+            <a href="{{ url_for('logout') }}" class="btn btn-red">Logout</a>
+        </div>
+    </header>
+
+    <div class="dashboard-metrics-top">
+        <div class="metric-box">
+            <div id="total-signals">{{ data.metrics.total_signals }}</div> 
+            <div class="metric-label">Total Signals</div>
+        </div>
+        <div class="metric-box">
+            <div id="total-trades">{{ data.metrics.total_trades }}</div>
+            <div class="metric-label">Total Trades</div>
+        </div>
+        <div class="metric-box">
+            <div id="open-positions-count">{{ data.metrics.open_positions_count }}</div>
+            <div class="metric-label">Open Positions</div>
+        </div>
+        <div class="metric-box">
+            <div id="last-signal-time">{{ data.metrics.last_signal_time }}</div>
+            <div class="metric-label">Last Signal</div>
+        </div>
+    </div>
+    
+    <main class="dashboard-grid">
+        <section class="full-width-chart-container card">
+            <h2>SUI/USDC Chart Analysis</h2>
+            <div id="candlestick-chart" style="height: 800px;">
+                </div>
+        </section>
+
+        <section class="section-container status-and-data-grid">
+            <div class="sub-section card">
+                <h2>🤖 RL Bot Status</h2>
+                <div class="data-pair"><span class="label">Status:</span> <span id="bot-status" class="status-running">RUNNING</span></div>
+                <div class="data-pair"><span class="label">PID:</span> 883173</div>
+                <div class="data-pair"><span class="label">Last Update:</span> <span id="last-update-time">01:31:18 PM</span></div>
+                <div class="data-pair"><span class="label">Trade Execution:</span> <span class="status-enabled">ENABLED</span></div>
+            </div>
+
+            <div class="sub-section card">
+                <h2>RL Decision</h2>
+                <div class="data-pair"><span class="label">Original Signal:</span> <span id="original-signal">HOLD</span></div>
+                <div class="rl-decision-box">
+                    Original: Safety first: Original=0, RL=HOLD, Action:Insufficient confidence
+                    <br>
+                    Final Decision: <span id="final-decision">HOLD</span>
+                </div>
+            </div>
+
+            <div class="sub-section card">
+                <h2>Live Market Data</h2>
+                <div class="data-pair"><span class="label">Price:</span> <span id="live-price" class="data-value">{{ data.live_data.Price }}</span></div>
+                <div class="data-pair"><span class="label">RSI:</span> <span id="live-rsi">{{ data.live_data.RSI }}</span></div>
+                <div class="data-pair"><span class="label">VWAP:</span> <span id="live-vwap" class="data-value">{{ data.live_data.VWAP }}</span></div>
+                <div class="data-pair"><span class="label">Current Signal:</span> <span id="current-signal">{{ data.live_data.CurrentSignal }}</span></div>
+            </div>
+
+            <div class="sub-section card">
+                <h2>Live Position</h2>
+                <div class="data-pair"><span class="label">Side:</span> <span id="live-side" class="status-hold">{{ data.live_data.Side }}</span></div>
+                <div class="data-pair"><span class="label">Size:</span> <span id="live-size">{{ data.live_data.Size }}</span></div>
+            </div>
+        </section>
+
+        <section class="section-container metrics-and-risk-grid">
+            <div class="metrics-card card">
+                <h2>📈 Performance Metrics</h2>
+                <div class="metric-row"><span class="label">Win Rate:</span> <span id="win-rate">{{ data.performance.win_rate }}</span></div>
+                <div class="metric-row"><span class="label">Total PnL:</span> <span id="total-pnl" class="data-loss">-${{ data.performance.total_pnl }}</span></div>
+                <div class="metric-row"><span class="label">Average Win:</span> <span id="avg-win">{{ data.performance.avg_win }}</span></div>
+                <div class="metric-row"><span class="label">Average Loss:</span> <span id="avg-loss" class="data-loss">{{ data.performance.avg_loss }}</span></div>
+                <div class="metric-row"><span class="label">Risk-Reward:</span> <span id="risk-reward">{{ data.performance.risk_reward }}</span></div>
+            </div>
+
+            <div class="metrics-card card">
+                <h2>📊 Trade Breakdown</h2>
+                <div class="data-pair"><span class="label">Total Trades:</span> <span id="total-trades-breakdown">{{ data.trade_breakdown.total_trades }}</span></div>
+                <div class="metric-row"><span class="label status-green">Winning:</span> <span id="winning-trades">{{ data.trade_breakdown.winning }}</span></div>
+                <div class="metric-row"><span class="label status-red">Losing:</span> <span id="losing-trades">{{ data.trade_breakdown.losing }}</span></div>
+            </div>
+            
+            <div class="metrics-card card">
+                <h2>➕ Open Positions</h2>
+                <div class="data-pair"><span class="label">No open positions</span></div>
+            </div>
+
+            <div class="metrics-card card">
+                <h2>💰 Projected Balance</h2>
+                <div class="data-pair"><span class="label">Current Balance:</span> <span id="current-balance" class="status-green">${{ data.projected_balance.current }}</span></div>
+                <div class="data-pair"><span class="label">30-Day Conservative:</span> <span id="p-conservative">{{ data.projected_balance.conservative }}</span></div>
+                <div class="data-pair"><span class="label">30-Day Realistic:</span> <span id="p-realistic">{{ data.projected_balance.realistic }}</span></div>
+                <div class="data-pair"><span class="label">30-Day RL Enhanced:</span> <span id="p-rl-enhanced">{{ data.projected_balance.rl_enhanced }}</span></div>
+            </div>
+
+            <div class="metrics-card card projection-scenarios">
+                <h2>📈 Projection Scenarios</h2>
+                <div id="projection-chart" style="height: 100px; width: 100%;">
+                    </div>
+            </div>
+
+            <div class="metrics-card card">
+                <h2>🛡️ Risk Assessment</h2>
+                <div class="data-pair"><span class="label">Best Case (90 days):</span> <span id="risk-best" class="data-loss">{{ data.risk_assessment.best_case }}</span></div>
+                <div class="data-pair"><span class="label">Worst Case (90 days):</span> <span id="risk-worst" class="data-loss">{{ data.risk_assessment.worst_case }}</span></div>
+                <div class="data-pair expected-range"><span class="label">Expected Range:</span> <span id="risk-range" class="data-loss">{{ data.risk_assessment.expected_range }}</span></div>
+            </div>
+        </section>
+
+        <section class="section-container bottom-charts-grid">
+            <div class="chart-box card">
+                <h2>📉 Cumulative PnL</h2>
+                <div id="cumulative-pnl-chart" style="height: 250px;"></div>
+            </div>
+
+            <div class="chart-box card">
+                <h2>📶 Signal Strength</h2>
+                <div id="signal-strength-chart" style="height: 250px;"></div>
+            </div>
+
+            <div class="table-box card">
+                <h2>🔔 Recent Signals</h2>
+                <table id="recent-signals-table">
+                    <thead>
+                        <tr><th>TIME</th><th>SIGNAL</th><th>STRENGTH</th><th>PRICE</th><th>STATUS</th></tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="table-box card">
+                <h2>💸 Recent Trades</h2>
+                <table id="recent-trades-table">
+                    <thead>
+                        <tr><th>TIME</th><th>SIDE</th><th>ENTRY</th><th>PNL</th><th>STATUS</th></tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-container recent-decisions-table">
+            <div class="table-box card full-width">
+                <h2>📋 Recent RL Decisions (Last 5)</h2>
+                <table id="recent-decisions-table">
+                    <thead>
+                        <tr><th>TIME</th><th>ORIGINAL</th><th>RL ACTION</th><th>FINAL</th><th>CONFIDENCE</th><th>REASON</th></tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-container market-news-grid">
+            <div class="table-box card full-width">
+                <h2>📰 Market News <span class="news-sentiment">Neutral ⭐️⭐️⭐️</span></h2>
+                <div class="news-articles-grid">
+                    <div class="news-article">
+                        <h4>Dogecoin Has Made It to Wall Street</h4>
+                        <p>The first memecoin ETFs have hit the stock market, legitimizing the once too-digital currency.</p>
+                    </div>
+                    <div class="news-article">
+                        <h4>Feds Scrutinizing Potential Insider Trading in Major Crypto Deals</h4>
+                        <p>Wall Street regulators are reportedly flagging suspicious trading in the stocks of companies that have announced big crypto bets.</p>
+                    </div>
+                    <div class="news-article">
+                        <h4>The Gaslit Asset Class</h4>
+                        <p>Jamie Grant invited me to address the annual conference of Grant's Interest Rate Observer. This was an intimidating prospect, the precious...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container analysis-grid">
+            <div class="card full-width">
+                <h2>🧠 AI Analysis</h2>
+                <div class="data-pair"><span class="label">Recommendation:</span> <span id="ai-recommendation" class="status-hold">HOLD</span></div>
+                <div class="data-pair"><span class="label">Confidence:</span> <span id="ai-confidence">Medium</span></div>
+                <p>The market sentiment is currently neutral with no strong indicators of a bullish or bearish trend... Given the low volume, it is advisable to **hold the position and wait for clearer signals** before making a move.</p>
+
+                <h3>📊 Market Context & Cross-Asset Analysis</h3>
+                <div class="market-context-row">
+                    <div class="context-item">
+                        <div class="context-value">$122.8K</div>
+                        <div class="context-label">BTC Price <span class="status-green">+2.30%</span></div>
+                    </div>
+                    <div class="context-item">
+                        <div class="context-value">$4.5K</div>
+                        <div class="context-label">ETH Price <span class="status-green">+0.53%</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="dashboard-footer">
+        <p>Developed by: <strong>Chetan, Darshan, and Jigme</strong></p>
+    </footer>
+    
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

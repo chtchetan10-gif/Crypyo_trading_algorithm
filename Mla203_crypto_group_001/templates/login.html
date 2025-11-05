@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Bot Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .pin-input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 1.5em;
+            margin: 0 5px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        .pin-input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        #pin_code_hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Enter 6-Digit PIN</h2>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <form id="pin-form" method="POST" action="{{ url_for('login') }}">
+            <div class="pin-container">
+                <input type="password" class="pin-input" maxlength="1" id="pin-1" autocomplete="off" inputmode="numeric">
+                <input type="password" class="pin-input" maxlength="1" id="pin-2" autocomplete="off" inputmode="numeric">
+                <input type="password" class="pin-input" maxlength="1" id="pin-3" autocomplete="off" inputmode="numeric">
+                <input type="password" class="pin-input" maxlength="1" id="pin-4" autocomplete="off" inputmode="numeric">
+                <input type="password" class="pin-input" maxlength="1" id="pin-5" autocomplete="off" inputmode="numeric">
+                <input type="password" class="pin-input" maxlength="1" id="pin-6" autocomplete="off" inputmode="numeric">
+            </div>
+            <input type="hidden" name="pin_code" id="pin_code_hidden">
+            <button type="submit" id="login-button" disabled>Log In</button>
+        </form>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('.pin-input');
+            const hiddenInput = document.getElementById('pin_code_hidden');
+            const loginButton = document.getElementById('login-button');
+
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    updatePinAndButton();
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && e.target.value.length === 0 && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+
+            function updatePinAndButton() {
+                const pin = Array.from(inputs).map(i => i.value).join('');
+                hiddenInput.value = pin;
+                loginButton.disabled = pin.length !== 6;
+            }
+        });
+    </script>
+</body>
+</html>
